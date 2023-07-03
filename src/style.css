@@ -1,1 +1,13 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
+
+#card-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 100px;
+  height: 150px;
+  background-color: green;
+  margin: 10px;
+}
