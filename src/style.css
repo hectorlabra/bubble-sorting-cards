@@ -1,13 +1,76 @@
-@import "~bootstrap/dist/css/bootstrap.min.css";
-
-#card-container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.card {
-  width: 100px;
-  height: 150px;
-  background-color: green;
-  margin: 10px;
-}
+body {
+    background-color: green;
+  }
+  
+  .card {
+    width: 100px;
+    height: 150px;
+    background-color: white;
+    border-radius: 5px;
+    margin: 10px;
+    position: relative;
+  }
+  
+  .card::before,
+  .card::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+  }
+  
+  .card.spades::before,
+  .card.spades::after {
+    background-color: black;
+  }
+  
+  .card.hearts::before,
+  .card.hearts::after {
+    background-color: red;
+  }
+  
+  .card.diamonds::before,
+  .card.diamonds::after,
+  .card.clubs::before,
+  .card.clubs::after {
+    background-color: black;
+  }
+  
+  .card.spades::before,
+  .card.hearts::before,
+  .card.diamonds::before,
+  .card.clubs::before {
+    top: 20px;
+    left: 8px;
+  }
+  
+  .card.spades::after,
+  .card.hearts::after,
+  .card.diamonds::after,
+  .card.clubs::after {
+    bottom: 20px;
+    right: 8px;
+  }
+  
+  .card.hearts::before,
+  .card.hearts::after,
+  .card.diamonds::before,
+  .card.diamonds::after {
+    transform: rotate(45deg);
+  }
+  
+  .card.diamonds::before,
+  .card.diamonds::after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    top: 10px;
+    left: 4px;
+  }
+  
+  .card.diamonds::after {
+    top: auto;
+    bottom: 10px;
+  }
+  
