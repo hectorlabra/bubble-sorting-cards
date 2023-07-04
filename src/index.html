@@ -3,15 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bubble sorting cards project - 4GeeksAcademy</title>
+    <title>Bubble sorting cards - 4geeks Project - Héctor Labra</title>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <div id="card-container"></div>
-    <input type="number" id="num-cards-input" placeholder="Número de cartas" />
-    <button id="generate-cards-btn">Generar cartas aleatorias</button>
-    <button id="sort-cards-btn">Ordenar cartas</button>
-
+    <div class="container">
+      <header>
+        <h1>Bubble sorting cards</h1>
+        <h2>4geeks Project - Héctor Labra</h2>
+      </header>
+      <main>
+        <form class="controls">
+          <input
+            class="ncards"
+            type="number"
+            placeholder="Insert number of cards"
+          />
+          <button class="draw">Draw</button>
+          <button class="sort">Sort</button>
+        </form>
+        <div class="card-container"></div>
+      </main>
+    </div>
     <script src="/src/app.js"></script>
   </body>
 </html>

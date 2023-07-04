@@ -1,83 +1,71 @@
-// Obtén referencias a los elementos del DOM
-const cardContainer = document.getElementById("card-container");
-const generateCardsBtn = document.getElementById("generate-cards-btn");
-const sortCardsBtn = document.getElementById("sort-cards-btn");
+const SYMBOL_CARD = ["♦", "♥", "♠", "♣"];
+const CARD_ITEM = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+const CARD_LETTERS = ["J", "Q", "K"];
+const CARDS_INPUT = document.querySelector(".ncards");
+const DRAW_BUTTON = document.querySelector(".draw");
+const SORT_BUTTON = document.querySelector(".sort");
+const CARD_CONTAINER = document.querySelector(".card-container");
 
-// Generar una lista de cartas aleatorias
-function generateRandomCards(numCards) {
-  const cards = [];
-  const suits = ["♠", "♥", "♦", "♣"];
-  const ranks = [
-    "A",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "J",
-    "Q",
-    "K"
-  ];
-
-  for (let i = 0; i < numCards; i++) {
-    const randomSuit = suits[Math.floor(Math.random() * suits.length)];
-    const randomRank = ranks[Math.floor(Math.random() * ranks.length)];
-    const card = `${randomRank}${randomSuit}`;
-    cards.push(card);
+function newCard() {
+  let item;
+  if (Math.random() < 0.3) {
+    item = CARD_LETTERS[Math.floor(Math.random() * CARD_LETTERS.length)];
+  } else {
+    item = CARD_ITEM[Math.floor(Math.random() * CARD_ITEM.length)];
   }
-
-  return cards;
+  const suit = SYMBOL_CARD[Math.floor(Math.random() * SYMBOL_CARD.length)];
+  return { item, suit };
 }
 
-// Renderizar las cartas en el contenedor
-function renderCards(cards) {
-  cardContainer.innerHTML = "";
+function drawCards(cards) {
+  CARD_CONTAINER.innerHTML = "";
 
-  cards.forEach(card => {
+  for (const card of cards) {
     const cardElement = document.createElement("div");
-    cardElement.className = "card";
-    cardElement.textContent = card;
-    cardContainer.appendChild(cardElement);
-  });
-}
+    cardElement.classList.add("card");
 
-// Generar cartas aleatorias al hacer clic en el botón "Generar cartas aleatorias"
-generateCardsBtn.addEventListener("click", () => {
-  const numCards = parseInt(prompt("Ingrese el número de cartas aleatorias:"));
-  const cards = generateRandomCards(numCards);
-  renderCards(cards);
-});
+    const topElement = document.createElement("div");
+    topElement.classList.add("top");
+    topElement.textContent = `${card.item} ${card.suit}`;
+    cardElement.appendChild(topElement);
 
-// Ordenar las cartas usando el algoritmo de ordenamiento de burbuja
-sortCardsBtn.addEventListener("click", () => {
-  const cardsCopy = Array.from(cardContainer.children).map(
-    cardElement => cardElement.textContent
-  );
-  const sortedCards = bubbleSort(cardsCopy);
-  renderCards(sortedCards);
-});
+    const suitElement = document.createElement("div");
+    suitElement.classList.add("suit");
+    suitElement.textContent = card.suit;
+    cardElement.appendChild(suitElement);
 
-// Implementar el algoritmo de ordenamiento de burbuja
-function bubbleSort(arr) {
-  const n = arr.length;
-  let swapped;
+    const bottomElement = document.createElement("div");
+    bottomElement.classList.add("bottom");
+    bottomElement.textContent = `${card.item} ${card.suit}`;
+    cardElement.appendChild(bottomElement);
 
-  do {
-    swapped = false;
-
-    for (let i = 0; i < n - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        const temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
-      }
+    if (card.suit === "♦" || card.suit === "♥") {
+      topElement.classList.add("color1");
+      suitElement.classList.add("color1");
+      bottomElement.classList.add("color1");
+    } else {
+      topElement.classList.add("color2");
+      suitElement.classList.add("color2");
+      bottomElement.classList.add("color2");
     }
-  } while (swapped);
 
-  return arr;
+    CARD_CONTAINER.appendChild(cardElement);
+  }
 }
+
+let cards = [];
+DRAW_BUTTON.addEventListener("click", event => {
+  event.preventDefault();
+  const numberOfCards = parseInt(CARDS_INPUT.value);
+
+  if (numberOfCards > 0) {
+    cards = Array.from({ length: numberOfCards }, newCard);
+    drawCards(cards);
+  }
+});
+
+SORT_BUTTON.addEventListener("click", event => {
+  event.preventDefault();
+  cards.sort((a, b) => a.item - b.item);
+  drawCards(cards);
+});
