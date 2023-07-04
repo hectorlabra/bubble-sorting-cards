@@ -1,13 +1,22 @@
+// Definición de los símbolos de las cartas
 const SYMBOL_CARD = ["♦", "♥", "♠", "♣"];
+
+// Definición de los valores numéricos de las cartas
 const CARD_ITEM = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+
+// Definición de las cartas con letras (J, Q, K)
 const CARD_LETTERS = ["J", "Q", "K"];
+
+// Obtención de referencias a elementos del DOM
 const CARDS_INPUT = document.querySelector(".ncards");
 const DRAW_BUTTON = document.querySelector(".draw");
 const SORT_BUTTON = document.querySelector(".sort");
 const CARD_CONTAINER = document.querySelector(".card-container");
 
+// Función para generar una nueva carta aleatoria
 function newCard() {
   let item;
+  // Hay un 30% de probabilidad de que la carta sea una letra (J, Q, K)
   if (Math.random() < 0.3) {
     item = CARD_LETTERS[Math.floor(Math.random() * CARD_LETTERS.length)];
   } else {
@@ -17,6 +26,7 @@ function newCard() {
   return { item, suit };
 }
 
+// Función para dibujar las cartas en el contenedor
 function drawCards(cards) {
   CARD_CONTAINER.innerHTML = "";
 
@@ -39,6 +49,7 @@ function drawCards(cards) {
     bottomElement.textContent = `${card.item} ${card.suit}`;
     cardElement.appendChild(bottomElement);
 
+    // Agregar estilos de color dependiendo del símbolo de la carta
     if (card.suit === "♦" || card.suit === "♥") {
       topElement.classList.add("color1");
       suitElement.classList.add("color1");
@@ -54,18 +65,23 @@ function drawCards(cards) {
 }
 
 let cards = [];
+
+// Event listener para el botón "Draw" (Dibujar)
 DRAW_BUTTON.addEventListener("click", event => {
   event.preventDefault();
   const numberOfCards = parseInt(CARDS_INPUT.value);
 
   if (numberOfCards > 0) {
+    // Generar un array de cartas aleatorias
     cards = Array.from({ length: numberOfCards }, newCard);
     drawCards(cards);
   }
 });
 
+// Event listener para el botón "Sort" (Ordenar)
 SORT_BUTTON.addEventListener("click", event => {
   event.preventDefault();
+  // Ordenar las cartas en base a su valor numérico o letra
   cards.sort((a, b) => a.item - b.item);
   drawCards(cards);
 });
