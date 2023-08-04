@@ -2,86 +2,140 @@
 const SYMBOL_CARD = ["♦", "♥", "♠", "♣"];
 
 // Definición de los valores numéricos de las cartas
-const CARD_ITEM = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+const CARD_ITEM = [
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "J",
+  "Q",
+  "K",
+  "A"
+];
 
-// Definición de las cartas con letras (J, Q, K)
-const CARD_LETTERS = ["J", "Q", "K"];
-
-// Obtención de referencias a elementos del DOM
 const CARDS_INPUT = document.querySelector(".ncards");
 const DRAW_BUTTON = document.querySelector(".draw");
 const SORT_BUTTON = document.querySelector(".sort");
 const CARD_CONTAINER = document.querySelector(".card-container");
+const LOG_CONTAINER = document.querySelector(".log-entries");
 
-// Función para generar una nueva carta aleatoria
-function newCard() {
-  let item;
-  // Hay un 30% de probabilidad de que la carta sea una letra (J, Q, K)
-  if (Math.random() < 0.3) {
-    item = CARD_LETTERS[Math.floor(Math.random() * CARD_LETTERS.length)];
-  } else {
-    item = CARD_ITEM[Math.floor(Math.random() * CARD_ITEM.length)];
-  }
+let cartas = [];
+let registros = [];
+
+function nuevaCarta() {
+  const item = CARD_ITEM[Math.floor(Math.random() * CARD_ITEM.length)];
   const suit = SYMBOL_CARD[Math.floor(Math.random() * SYMBOL_CARD.length)];
   return { item, suit };
 }
 
-// Función para dibujar las cartas en el contenedor
-function drawCards(cards) {
+function dibujarCartas(cartas) {
   CARD_CONTAINER.innerHTML = "";
 
-  for (const card of cards) {
-    const cardElement = document.createElement("div");
-    cardElement.classList.add("card");
+  for (const carta of cartas) {
+    const elementoCarta = document.createElement("div");
+    elementoCarta.classList.add("card");
 
-    const topElement = document.createElement("div");
-    topElement.classList.add("top");
-    topElement.textContent = `${card.item} ${card.suit}`;
-    cardElement.appendChild(topElement);
+    const elementoSuperior = document.createElement("div");
+    elementoSuperior.classList.add("top");
+    elementoSuperior.textContent = `${carta.item} ${carta.suit}`;
+    elementoCarta.appendChild(elementoSuperior);
 
-    const suitElement = document.createElement("div");
-    suitElement.classList.add("suit");
-    suitElement.textContent = card.suit;
-    cardElement.appendChild(suitElement);
+    const elementoPalo = document.createElement("div");
+    elementoPalo.classList.add("suit");
+    elementoPalo.textContent = carta.suit;
+    elementoCarta.appendChild(elementoPalo);
 
-    const bottomElement = document.createElement("div");
-    bottomElement.classList.add("bottom");
-    bottomElement.textContent = `${card.item} ${card.suit}`;
-    cardElement.appendChild(bottomElement);
+    const elementoInferior = document.createElement("div");
+    elementoInferior.classList.add("bottom");
+    elementoInferior.textContent = `${carta.item} ${carta.suit}`;
+    elementoCarta.appendChild(elementoInferior);
 
-    // Agregar estilos de color dependiendo del símbolo de la carta
-    if (card.suit === "♦" || card.suit === "♥") {
-      topElement.classList.add("color1");
-      suitElement.classList.add("color1");
-      bottomElement.classList.add("color1");
+    if (carta.suit === "♦" || carta.suit === "♥") {
+      elementoSuperior.classList.add("color1");
+      elementoPalo.classList.add("color1");
+      elementoInferior.classList.add("color1");
     } else {
-      topElement.classList.add("color2");
-      suitElement.classList.add("color2");
-      bottomElement.classList.add("color2");
+      elementoSuperior.classList.add("color2");
+      elementoPalo.classList.add("color2");
+      elementoInferior.classList.add("color2");
     }
 
-    CARD_CONTAINER.appendChild(cardElement);
+    CARD_CONTAINER.appendChild(elementoCarta);
   }
 }
 
-let cards = [];
+function registrarOrdenCartas(cartas) {
+  const registro = document.createElement("div");
+  registro.classList.add("log-entry");
 
-// Event listener para el botón "Draw" (Dibujar)
-DRAW_BUTTON.addEventListener("click", event => {
-  event.preventDefault();
-  const numberOfCards = parseInt(CARDS_INPUT.value);
+  const cartasHtml = cartas
+    .map(
+      carta => `
+      <div class="card">
+        <div class="top">${carta.item} ${carta.suit}</div>
+        <div class="suit">${carta.suit}</div>
+        <div class="bottom">${carta.item} ${carta.suit}</div>
+      </div>
+    `
+    )
+    .join("");
 
-  if (numberOfCards > 0) {
-    // Generar un array de cartas aleatorias
-    cards = Array.from({ length: numberOfCards }, newCard);
-    drawCards(cards);
+  registro.innerHTML = cartasHtml;
+  LOG_CONTAINER.appendChild(registro);
+}
+
+DRAW_BUTTON.addEventListener("click", evento => {
+  evento.preventDefault();
+  const numeroDeCartas = parseInt(CARDS_INPUT.value);
+
+  if (numeroDeCartas > 0) {
+    cartas = Array.from({ length: numeroDeCartas }, nuevaCarta);
+    dibujarCartas(cartas);
   }
 });
 
-// Event listener para el botón "Sort" (Ordenar)
-SORT_BUTTON.addEventListener("click", event => {
-  event.preventDefault();
-  // Ordenar las cartas en base a su valor numérico o letra
-  cards.sort((a, b) => a.item - b.item);
-  drawCards(cards);
+SORT_BUTTON.addEventListener("click", evento => {
+  evento.preventDefault();
+  LOG_CONTAINER.innerHTML = ""; // Limpiar el Registro de Ordenamiento antes de realizar un nuevo ordenamiento
+  registros = [];
+
+  const cartasClonadas = [...cartas]; // Clonar el arreglo de cartas para preservar el orden original
+
+  // Implementación de Bubble Sort
+  for (let i = 0; i < cartasClonadas.length - 1; i++) {
+    for (let j = 0; j < cartasClonadas.length - i - 1; j++) {
+      if (
+        CARD_ITEM.indexOf(cartasClonadas[j].item) >
+        CARD_ITEM.indexOf(cartasClonadas[j + 1].item)
+      ) {
+        // Intercambiar cartas
+        const temp = cartasClonadas[j];
+        cartasClonadas[j] = cartasClonadas[j + 1];
+        cartasClonadas[j + 1] = temp;
+
+        // Registrar el paso
+        registros.push([...cartasClonadas]);
+      }
+    }
+  }
+
+  mostrarRegistros(registros);
 });
+
+function mostrarRegistros(registros) {
+  let retraso = 0;
+
+  registros.forEach(registro => {
+    setTimeout(() => {
+      LOG_CONTAINER.innerHTML = ""; // Limpiar el Registro de Ordenamiento antes de mostrar el siguiente registro
+      registrarOrdenCartas(registro);
+    }, retraso);
+
+    retraso += 1000; // Mostrar cada registro después de 1 segundo (1000 ms)
+  });
+}
